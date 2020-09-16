@@ -1,0 +1,7 @@
+ProtectionStatus
+| where TypeofProtection  == 'Windows Defender'
+| where ProtectionStatusRank == '150'
+| extend ASVDate = split(ProtectionStatusDetails,' ')
+| extend ASVDateTime = todatetime(strcat(ASVDate[1],' ',ASVDate[2]))
+| where ASVDateTime <= ago(3d)
+| summarize by Computer,CentralDateTime = ASVDateTime - 5h, ProtectionStatusDetails
